@@ -5,6 +5,7 @@ const PORT = 3001;
 
 const http = require("http").Server(app);
 const cors = require("cors");
+
 const socketIO = require("socket.io")(http, {
   cors: {
     origin: "http://localhost:5173",
@@ -12,10 +13,14 @@ const socketIO = require("socket.io")(http, {
 });
 socketIO.on("connection", (socket) => {
   console.log(`${socket.id} user connected  `);
+  socket.on("message", (data) => {
+    socketIO.emit("response", data);
+  });
   socket.on("disconnect", () => {
     console.log(`${socket.id} user is disconnected `);
   });
 });
+
 app.get("api", (req, res) => {
   res.json("hi");
 });
